@@ -2,6 +2,10 @@ from itertools import chain
 import pandas as pd
 from pprint import pprint
 
+from keras.utils import to_categorical
+from keras import models
+from keras import layers
+
 # Import the data
 
 data = pd.read_csv("data.csv")
@@ -65,5 +69,12 @@ tokenized_labels_list = []
 for label in labels_list:
     tokenized_labels_list.append(tokenized_labels[label])
 
-pprint(tokenized_features_list)
-pprint(tokenized_labels_list)
+# pprint(tokenized_features_list)
+# pprint(tokenized_labels_list)
+
+testing_data = [[6, 30, 16, 10, 21, 0],
+                [6, 30, 16, 10, 21, 0],
+                [6, 30, 74, 0, 0, 0],
+                [6, 30, 74, 0, 0, 0]]
+
+testing_output = [0.5, 0.5, 0.5, 0.5]
