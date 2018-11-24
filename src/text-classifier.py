@@ -28,7 +28,6 @@ tokenized_features = {}
 for i in range(len(tokenized_features_list)):
     tokenized_features[tokenized_features_list[i]] = i + 1
 
-pprint(tokenized_features)
 
 ### Replacing worlds with tokens
 
@@ -40,6 +39,7 @@ for feature in feature_list:
         tokenized_feature.append(tokenized_features[world])
     tokenized_features_list.append(tokenized_feature)
 
+
 ## Padding the vectors so that they will have the same length 
 
 ### Having the max length
@@ -50,7 +50,7 @@ for vector in tokenized_features_list:
     while len(vector) < 6:
         vector.append(0)
 
-# Tokenizing target vectors and link them the tokenized features
+# Tokenizing labels
 
 labels_list = list(data["labels"])
 
@@ -60,16 +60,10 @@ tokenized_labels = {
     "maybe": 0.5
 }
 
-# pprint(labels_list)
-# pprint(tokenized_features_list)
+tokenized_labels_list = []
 
+for label in labels_list:
+    tokenized_labels_list.append(tokenized_labels[label])
 
-
-# tokenized_data_set = {}
-
-# for tokenized_feature, label in tokenized_features_list, labels_list:
-#     tokenized_data_set[tokenized_feature] = tokenized_labels[label]
-
-
-# pprint(tokenized_data_set)
-
+pprint(tokenized_features_list)
+pprint(tokenized_labels_list)
