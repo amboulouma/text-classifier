@@ -25,7 +25,7 @@ tokenized_features_list = list(chain.from_iterable(tokenized_features_list))
 tokenized_features_list = list(set(tokenized_features_list))
 
 tokenized_features = {}
-for i in range(len(tokenized_features_list)):
+for i in range(1, len(tokenized_features_list) + 1):
     tokenized_features[tokenized_features_list[i]] = i
 
 ### Replacing worlds with tokens
@@ -37,6 +37,8 @@ for feature in feature_list:
     for world in feature.split():
         tokenized_feature.append(tokenized_features[world])
     tokenized_features_list.append(tuple(tokenized_feature))
+
+## Padding the vectors so that they will have the same length 
 
 pprint(tokenized_features_list)
 
