@@ -25,8 +25,8 @@ tokenized_features_list = list(chain.from_iterable(tokenized_features_list))
 tokenized_features_list = list(set(tokenized_features_list))
 
 tokenized_features = {}
-for i in range(1, len(tokenized_features_list) + 1):
-    tokenized_features[tokenized_features_list[i]] = i
+for i in range(len(tokenized_features_list)):
+    tokenized_features[tokenized_features_list[i]] = i + 1
 
 ### Replacing worlds with tokens
 
