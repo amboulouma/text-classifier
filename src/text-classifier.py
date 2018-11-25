@@ -73,18 +73,10 @@ tokenized_labels_list = []
 for label in labels_list:
     tokenized_labels_list.append(tokenized_labels[label])
 
-training_data = np.array(tokenized_features_list)
-training_targets = np.array(tokenized_labels_list)
+data = np.array(tokenized_features_list)
+targets = np.array(tokenized_labels_list)
 
-testing_data = [[6, 30, 16, 10, 21, 0],
-                [6, 30, 16, 10, 21, 0],
-                [6, 30, 74, 0, 0, 0],
-                [6, 30, 74, 0, 0, 0]]
-
-testing_targets = [0.5, 0.5, 0.5, 0.5]
-
-data = np.concatenate((training_data, testing_data), axis=0)
-targets = np.concatenate((training_targets, testing_targets), axis=0)
+# Printing details
 
 print("Categories:", np.unique(targets))
 print("Number of unique words:", len(np.unique(np.hstack(data))))
@@ -95,7 +87,50 @@ print("Standard Deviation:", round(np.std(length)))
 
 print("Label:", targets[0])
 
+# Decoding the data
+
 reverse_tokenized_features = dict([(value, key) for (key, value) in tokenized_features.items()]) 
 decoded = " ".join( [reverse_tokenized_features.get(i, "") for i in data[0]] )
 print(data[0])
 print(decoded) 
+
+# Prepare the data
+
+test_input = data[169:]
+test_output = targets[169:]
+
+train_input = data[:169]
+train_output = targets[:169]
+
+# Building and Training the Model
+
+model = models.Sequential()
+
+## Input - Layer
+model.add(layers.Dense(3, activation = "relu", input_shape=(6, )))
+
+## Hidden - Layers
+model.add(layers.Dropout(0.3, noise_shape=None, seed=None))
+model.add(layers.Dense(50, activation = "relu"))
+model.add(layers.Dropout(0.2, noise_shape=None, seed=None))
+model.add(layers.Dense(50, activation = "relu"))
+
+## Output- Layer
+model.add(layers.Dense(1, activation = "sigmoid"))
+
+model.summary()
+
+model.compile(
+    optimizer = "adam",
+    loss = "binary_crossentropy",
+    metrics = ["accuracy"]
+)
+
+results = model.fit(
+    train_input, train_output,
+    epochs= 2,
+    batch_size = 500,
+    validation_data = (test_input, test_output)
+)
+
+print("Test-Accuracy:", np.mean(results.history["val_acc"]))
