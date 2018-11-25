@@ -120,16 +120,20 @@ model.add(layers.Dense(1, activation = "sigmoid"))
 
 model.summary()
 
+# The model options and methods
+
 model.compile(
     optimizer = "adam",
     loss = "binary_crossentropy",
     metrics = ["accuracy"]
 )
 
+# The model fitting results
+
 results = model.fit(
     train_input, train_output,
-    epochs= 2,
-    batch_size = 500,
+    epochs= 20,
+    batch_size = 5000,
     validation_data = (test_input, test_output)
 )
 
