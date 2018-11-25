@@ -88,3 +88,14 @@ targets = np.concatenate((training_targets, testing_targets), axis=0)
 
 print("Categories:", np.unique(targets))
 print("Number of unique words:", len(np.unique(np.hstack(data))))
+
+length = [len(i) for i in data]
+print("Average Review length:", np.mean(length))
+print("Standard Deviation:", round(np.std(length)))
+
+print("Label:", targets[0])
+
+reverse_tokenized_features = dict([(value, key) for (key, value) in tokenized_features.items()]) 
+decoded = " ".join( [reverse_tokenized_features.get(i, "") for i in data[0]] )
+print(data[0])
+print(decoded) 
