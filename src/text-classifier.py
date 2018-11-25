@@ -4,6 +4,7 @@ from pprint import pprint
 import pandas as pd
 import numpy as np
 import os
+import json
 
 from keras.utils import to_categorical
 from keras import models
@@ -24,21 +25,20 @@ data = pd.read_csv("data.csv")
 ## Generate tokens for worlds
 
 feature_list = list(data["features"])
-tokenized_features_list = []
-
-for feature in feature_list:
-    tokenized_features_list.append(feature.split())
-
-tokenized_features_list = list(chain.from_iterable(tokenized_features_list))
+features_list = []
 
 ### Tokenized items have to be unique
 
-tokenized_features_list = list(set(tokenized_features_list))
+for feature in feature_list:
+    for word in feature.split():
+        if word not in features_list: features_list.append(word)
 
 tokenized_features = {}
-for i in range(len(tokenized_features_list)):
-    tokenized_features[tokenized_features_list[i]] = i + 1
+for i in range(len(features_list)):
+    tokenized_features[features_list[i]] = i + 1
 
+with open('vocab.json', 'w') as fp:
+    json.dump(tokenized_features, fp)
 
 ### Replacing worlds with tokens
 
@@ -167,3 +167,4 @@ print("Loaded model from disk")
 loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 score = loaded_model.evaluate(train_input, train_output, verbose=0)
 print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100))
+
