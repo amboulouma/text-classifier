@@ -3,11 +3,14 @@ from pprint import pprint
 
 import pandas as pd
 import numpy as np
+import os
 
 from keras.utils import to_categorical
 from keras import models
 from keras import layers
 from keras.datasets import imdb
+from keras.models import model_from_json
+
 
 
 # Import the data
@@ -96,11 +99,8 @@ print(decoded)
 
 # Prepare the data
 
-test_input = data[169:]
-test_output = targets[169:]
-
-train_input = data[:169]
-train_output = targets[:169]
+train_input = data
+train_output = targets
 
 # Building and Training the Model
 
@@ -132,9 +132,38 @@ model.compile(
 
 results = model.fit(
     train_input, train_output,
-    epochs= 20,
-    batch_size = 5000,
-    validation_data = (test_input, test_output)
+    epochs= 150,
+    batch_size = 500,
 )
 
-print("Test-Accuracy:", np.mean(results.history["val_acc"]))
+# evaluate the model
+
+scores = model.evaluate(train_input, train_output, verbose=0)
+print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+
+# serialize model to JSON
+
+model_json = model.to_json()
+with open("model.json", "w") as json_file:
+    json_file.write(model_json)
+
+# serialize weights to HDF5
+
+model.save_weights("model.h5")
+print("Saved model to disk")
+
+# later...
+
+# load json and create model
+json_file = open('model.json', 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+loaded_model = model_from_json(loaded_model_json)
+# load weights into new model
+loaded_model.load_weights("model.h5")
+print("Loaded model from disk")
+
+# evaluate loaded model on test data
+loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+score = loaded_model.evaluate(train_input, train_output, verbose=0)
+print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100))
